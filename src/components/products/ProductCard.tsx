@@ -1,7 +1,9 @@
 import { motion } from 'framer-motion';
 import { Star, ShoppingCart, Heart, Cpu, HardDrive, Battery, Camera } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Product } from '@/types/product';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
@@ -12,6 +14,8 @@ interface ProductCardProps {
 
 const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const { addToCart } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -25,12 +29,27 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
     ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
     : 0;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!product.inStock) return;
-    addToCart(product);
-    toast.success(`${product.name} added to cart!`, {
-      description: `₹${product.price.toLocaleString('en-IN')}`,
-    });
+    
+    if (!user) {
+      toast.error('Please sign in to add items to cart', {
+        action: {
+          label: 'Sign In',
+          onClick: () => navigate('/auth')
+        }
+      });
+      return;
+    }
+
+    try {
+      await addToCart(product);
+      toast.success(`${product.name} added to cart!`, {
+        description: `₹${product.price.toLocaleString('en-IN')}`,
+      });
+    } catch (error) {
+      toast.error('Failed to add to cart');
+    }
   };
 
   return (
