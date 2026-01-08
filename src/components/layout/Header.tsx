@@ -1,12 +1,23 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingCart, Menu, X, Smartphone, Search, User } from 'lucide-react';
+import { ShoppingCart, Menu, X, Smartphone, Search, User, LogOut } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { toast } from 'sonner';
 
 const Header = () => {
   const { totalItems } = useCart();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -15,6 +26,12 @@ const Header = () => {
     { name: 'Brands', href: '/brands' },
     { name: 'Deals', href: '/deals' },
   ];
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success('Signed out successfully');
+    navigate('/');
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/50">
@@ -47,9 +64,38 @@ const Header = () => {
               <Search className="w-5 h-5" />
             </Button>
             
-            <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground">
-              <User className="w-5 h-5" />
-            </Button>
+            {/* User Menu */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground">
+                    <User className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <div className="px-2 py-1.5">
+                    <p className="text-sm font-medium text-foreground">Account</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/cart')}>
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    My Cart
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground">
+                  <User className="w-5 h-5" />
+                </Button>
+              </Link>
+            )}
 
             {/* Cart Button */}
             <Link to="/cart">
@@ -102,6 +148,30 @@ const Header = () => {
                     {link.name}
                   </Link>
                 ))}
+                {user ? (
+                  <>
+                    <div className="px-4 py-3 border-t border-border/50">
+                      <p className="text-sm text-muted-foreground">{user.email}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleSignOut();
+                        setMobileMenuOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-3 text-destructive hover:bg-muted/50 rounded-lg transition-colors"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="block px-4 py-3 text-primary hover:bg-muted/50 rounded-lg transition-colors font-medium"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                )}
               </div>
             </motion.nav>
           )}
