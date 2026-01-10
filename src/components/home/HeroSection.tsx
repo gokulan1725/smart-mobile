@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Shield, Truck, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -63,13 +64,17 @@ const HeroSection = () => {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16"
           >
-            <Button size="lg" className="btn-primary-glow text-primary-foreground font-semibold px-8 h-12 text-base">
-              Shop Now
-              <ArrowRight className="w-5 h-5 ml-2" />
-            </Button>
-            <Button size="lg" variant="outline" className="border-border hover:bg-muted px-8 h-12 text-base">
-              View All Brands
-            </Button>
+            <Link to="/products">
+              <Button size="lg" className="btn-primary-glow text-primary-foreground font-semibold px-8 h-12 text-base">
+                Shop Now
+                <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </Link>
+            <Link to="/brands">
+              <Button size="lg" variant="outline" className="border-border hover:bg-muted px-8 h-12 text-base">
+                View All Brands
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Trust Badges */}
