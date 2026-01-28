@@ -22,6 +22,7 @@ export interface Product {
   description: string;
   colors: string[];
   featured?: boolean;
+  isNew?: boolean;
 }
 
 export interface CartItem {
