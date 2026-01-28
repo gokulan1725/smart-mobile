@@ -11,6 +11,16 @@ import Cart from "./pages/Cart";
 import Products from "./pages/Products";
 import Brands from "./pages/Brands";
 import Deals from "./pages/Deals";
+import NewArrivals from "./pages/NewArrivals";
+import Compare from "./pages/Compare";
+import HelpCenter from "./pages/HelpCenter";
+import Shipping from "./pages/Shipping";
+import Contact from "./pages/Contact";
+import Returns from "./pages/Returns";
+import About from "./pages/About";
+import Careers from "./pages/Careers";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -30,6 +40,16 @@ const App = () => (
               <Route path="/products" element={<Products />} />
               <Route path="/brands" element={<Brands />} />
               <Route path="/deals" element={<Deals />} />
+              <Route path="/new" element={<NewArrivals />} />
+              <Route path="/compare" element={<Compare />} />
+              <Route path="/help" element={<HelpCenter />} />
+              <Route path="/shipping" element={<Shipping />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/returns" element={<Returns />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/careers" element={<Careers />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
