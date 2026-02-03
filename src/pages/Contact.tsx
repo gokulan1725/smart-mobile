@@ -28,20 +28,20 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: 'support@mobilehub.com',
+      details: 'gokulangokulan338@gmail.com',
       subtext: 'We\'ll respond within 24 hours',
     },
     {
       icon: Phone,
       title: 'Phone',
-      details: '+91 1800-123-4567',
-      subtext: 'Toll-free, Mon-Sat 9AM-8PM',
+      details: '+91 6382393509',
+      subtext: 'Mon-Sat 9AM-8PM',
     },
     {
       icon: MapPin,
       title: 'Address',
-      details: '123 Tech Park, Electronic City',
-      subtext: 'Bangalore, Karnataka 560100',
+      details: 'Sri Narayana Guru Street, Vallam',
+      subtext: 'Villupuram District, Tamil Nadu',
     },
     {
       icon: Clock,
