@@ -8,20 +8,45 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Mail, Phone, MapPin, Clock, Send } from 'lucide-react';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    subject: '',
+    message: ''
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({ ...prev, [id]: value }));
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast.success('Message sent successfully! We\'ll get back to you soon.');
-    setIsSubmitting(false);
-    (e.target as HTMLFormElement).reset();
+    try {
+      const { data, error } = await supabase.functions.invoke('send-contact-email', {
+        body: formData
+      });
+
+      if (error) throw error;
+
+      if (data?.success) {
+        toast.success('Message sent successfully! We\'ll get back to you soon.');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        throw new Error(data?.error || 'Failed to send message');
+      }
+    } catch (error: any) {
+      console.error('Error sending message:', error);
+      toast.error('Failed to send message. Please try again later.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -87,16 +112,38 @@ const Contact = () => {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="name">Name</Label>
-                    <Input id="name" placeholder="Your name" required />
+                    <Input 
+                      id="name" 
+                      placeholder="Your name" 
+                      required 
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      maxLength={100}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="your@email.com" required />
+                    <Input 
+                      id="email" 
+                      type="email" 
+                      placeholder="your@email.com" 
+                      required 
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      maxLength={255}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="subject">Subject</Label>
-                  <Input id="subject" placeholder="How can we help?" required />
+                  <Input 
+                    id="subject" 
+                    placeholder="How can we help?" 
+                    required 
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    maxLength={200}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="message">Message</Label>
@@ -105,6 +152,9 @@ const Contact = () => {
                     placeholder="Tell us more about your inquiry..."
                     rows={5}
                     required
+                    value={formData.message}
+                    onChange={handleInputChange}
+                    maxLength={5000}
                   />
                 </div>
                 <Button type="submit" className="w-full" disabled={isSubmitting}>
