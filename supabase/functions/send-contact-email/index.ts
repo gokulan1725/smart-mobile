@@ -48,7 +48,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const emailResponse = await resend.emails.send({
       from: "MobileHub Contact <onboarding@resend.dev>",
-      to: ["gokulangokulan338@gmail.com"],
+      to: ["243115104020@msec.edu.in"],
       reply_to: email,
       subject: `Contact Form: ${subject}`,
       html: `
