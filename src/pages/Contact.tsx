@@ -53,7 +53,7 @@ const Contact = () => {
     {
       icon: Mail,
       title: 'Email',
-      details: 'gokulangokulan338@gmail.com',
+      details: '243115104020@gmail.com',
       subtext: 'We\'ll respond within 24 hours',
     },
     {
