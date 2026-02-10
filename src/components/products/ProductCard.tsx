@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Star, ShoppingCart, Heart, Cpu, HardDrive, Battery, Camera } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Cpu, HardDrive, Battery, Camera, Truck, CreditCard, BadgePercent } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '@/types/product';
 import { useCart } from '@/context/CartContext';
@@ -129,6 +129,21 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
           </div>
         </div>
 
+        {/* Payment & Delivery Info */}
+        <div className="flex flex-wrap gap-2 text-xs">
+          <span className="inline-flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded-full">
+            <CreditCard className="w-3 h-3" /> Online/Offline Pay
+          </span>
+          <span className="inline-flex items-center gap-1 bg-accent/80 text-accent-foreground px-2 py-1 rounded-full">
+            <Truck className="w-3 h-3" /> Free Delivery
+          </span>
+          {discount > 0 && (
+            <span className="inline-flex items-center gap-1 bg-destructive/10 text-destructive px-2 py-1 rounded-full">
+              <BadgePercent className="w-3 h-3" /> {discount}% Off
+            </span>
+          )}
+        </div>
+
         {/* Price & Stock */}
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
@@ -141,9 +156,14 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
               </p>
             )}
           </div>
-          <span className={product.inStock ? 'stock-badge-instock' : 'stock-badge-outofstock'}>
-            {product.inStock ? 'In Stock' : 'Out of Stock'}
-          </span>
+          <div className="text-right space-y-0.5">
+            <span className={product.inStock ? 'stock-badge-instock' : 'stock-badge-outofstock'}>
+              {product.inStock ? 'In Stock' : 'Out of Stock'}
+            </span>
+            {product.inStock && (
+              <p className="text-xs text-muted-foreground">Qty: {product.stockCount}</p>
+            )}
+          </div>
         </div>
 
         {/* Add to Cart Button */}

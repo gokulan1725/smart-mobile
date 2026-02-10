@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 
 const brands = [
   { name: 'Apple', logo: '🍎' },
@@ -12,6 +13,12 @@ const brands = [
 ];
 
 const BrandsSection = () => {
+  const navigate = useNavigate();
+
+  const handleBrandClick = (brandName: string) => {
+    navigate(`/products?brand=${encodeURIComponent(brandName)}`);
+  };
+
   return (
     <section className="py-12 border-y border-border/50">
       <div className="container mx-auto px-4">
@@ -32,6 +39,7 @@ const BrandsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.05 }}
+              onClick={() => handleBrandClick(brand.name)}
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer group"
             >
               <span className="text-2xl group-hover:scale-110 transition-transform">{brand.logo}</span>
