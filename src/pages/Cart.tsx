@@ -269,7 +269,7 @@ const Cart = () => {
 
                   <Button 
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6"
-                    onClick={() => toast.info('Checkout coming soon!')}
+                    onClick={() => navigate('/checkout')}
                   >
                     Proceed to Checkout
                   </Button>
