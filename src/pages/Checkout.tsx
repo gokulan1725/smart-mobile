@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, CreditCard, Banknote, Truck, MapPin } from 'lucide-react';
+import { ArrowLeft, CreditCard, Banknote, Truck, MapPin, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { useAuth } from '@/context/AuthContext';
 import { useCart } from '@/context/CartContext';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -35,22 +36,86 @@ const Checkout = () => {
     if (!authLoading && user && items.length === 0) navigate('/cart');
   }, [items, authLoading, user, navigate]);
 
-  const handlePlaceOrder = async () => {
+  const validateAddress = () => {
     if (!address.name || !address.phone || !address.street || !address.city || !address.state || !address.pincode) {
       toast.error('Please fill in all address fields');
-      return;
+      return false;
     }
+    if (!/^\d{10}$/.test(address.phone)) {
+      toast.error('Please enter a valid 10-digit phone number');
+      return false;
+    }
+    if (!/^\d{6}$/.test(address.pincode)) {
+      toast.error('Please enter a valid 6-digit pincode');
+      return false;
+    }
+    return true;
+  };
+
+  const handleOnlinePayment = async () => {
+    if (!validateAddress()) return;
     setProcessing(true);
     try {
-      // Simulate order processing
-      await new Promise(r => setTimeout(r, 2000));
-      await clearCart();
-      toast.success('Order placed successfully! 🎉');
-      navigate('/');
-    } catch {
-      toast.error('Failed to place order');
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          items: items.map(item => ({
+            product_name: item.product_name,
+            product_price: item.product_price,
+            product_image: item.product_image,
+            quantity: item.quantity,
+          })),
+          address,
+        },
+      });
+
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error('No checkout URL received');
+      }
+    } catch (err: any) {
+      console.error('Payment error:', err);
+      toast.error('Failed to initiate payment. Please try again.');
     } finally {
       setProcessing(false);
+    }
+  };
+
+  const handleCODOrder = async () => {
+    if (!validateAddress()) return;
+    setProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('send-order-email', {
+        body: {
+          items: items.map(item => ({
+            product_name: item.product_name,
+            product_price: item.product_price,
+            quantity: item.quantity,
+          })),
+          address,
+          totalPrice,
+        },
+      });
+
+      if (error) throw error;
+
+      await clearCart();
+      toast.success(`Order placed successfully! 🎉 Order ID: ${data?.orderId}`);
+      navigate('/');
+    } catch (err: any) {
+      console.error('COD order error:', err);
+      toast.error('Failed to place order. Please try again.');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handlePlaceOrder = () => {
+    if (paymentMethod === 'online') {
+      handleOnlinePayment();
+    } else {
+      handleCODOrder();
     }
   };
 
@@ -100,7 +165,7 @@ const Checkout = () => {
                   <label className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
                     <RadioGroupItem value="online" id="online" />
                     <CreditCard className="w-5 h-5 text-primary" />
-                    <div><p className="font-medium text-foreground">Online Payment</p><p className="text-xs text-muted-foreground">UPI, Card, Net Banking</p></div>
+                    <div><p className="font-medium text-foreground">Online Payment</p><p className="text-xs text-muted-foreground">Card, UPI, Net Banking via Stripe</p></div>
                   </label>
                   <label className="flex items-center gap-3 p-3 rounded-lg border border-border hover:border-primary/50 cursor-pointer transition-colors">
                     <RadioGroupItem value="cod" id="cod" />
@@ -141,10 +206,16 @@ const Checkout = () => {
                   <div className="border-t border-border pt-3 flex justify-between font-semibold text-foreground"><span>Total</span><span className="text-xl">₹{totalPrice.toLocaleString()}</span></div>
                 </div>
                 <Button className="w-full mt-6 py-6" onClick={handlePlaceOrder} disabled={processing}>
-                  {processing ? 'Processing...' : `Place Order • ₹${totalPrice.toLocaleString()}`}
+                  {processing ? (
+                    <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Processing...</span>
+                  ) : paymentMethod === 'online' ? (
+                    `Pay Online • ₹${totalPrice.toLocaleString()}`
+                  ) : (
+                    `Place COD Order • ₹${totalPrice.toLocaleString()}`
+                  )}
                 </Button>
                 <p className="text-xs text-muted-foreground text-center mt-3">
-                  {paymentMethod === 'online' ? '🔒 Secure online payment' : '💵 Pay cash on delivery'}
+                  {paymentMethod === 'online' ? '🔒 Secure payment via Stripe' : '💵 Pay cash on delivery • Confirmation email will be sent'}
                 </p>
               </motion.div>
             </div>
