@@ -2,3 +2,9 @@ project_id = "grpqphmoeuosavusajks"
 
 [functions.send-contact-email]
 verify_jwt = false
+
+[functions.create-checkout]
+verify_jwt = false
+
+[functions.send-order-email]
+verify_jwt = false
