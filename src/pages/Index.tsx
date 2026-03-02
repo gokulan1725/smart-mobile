@@ -22,11 +22,6 @@ const Index = () => {
             subtitle="Editor's Choice"
           />
           
-          <ProductGrid 
-            products={products} 
-            title="All Smartphones"
-            subtitle="Browse Our Collection"
-          />
         </div>
       </main>
       
