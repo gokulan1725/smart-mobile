@@ -6,6 +6,7 @@ import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import { trackProductView, useBrowsedProducts } from '@/hooks/useProductViews';
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +17,12 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
   const { addToCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { addBrowsedProduct } = useBrowsedProducts();
+
+  const handleCardClick = () => {
+    trackProductView(product.id, user?.id);
+    addBrowsedProduct({ id: product.id, name: product.name, brand: product.brand, price: product.price });
+  };
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -57,7 +64,8 @@ const ProductCard = ({ product, index = 0 }: ProductCardProps) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="group glass-card rounded-2xl overflow-hidden hover-lift"
+      className="group glass-card rounded-2xl overflow-hidden hover-lift cursor-pointer"
+      onClick={handleCardClick}
     >
       {/* Image Container */}
       <div className="product-image-container aspect-square p-6 relative">

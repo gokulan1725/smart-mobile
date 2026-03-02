@@ -3,7 +3,8 @@ import Footer from '@/components/layout/Footer';
 import HeroSection from '@/components/home/HeroSection';
 import BrandsSection from '@/components/home/BrandsSection';
 import ProductGrid from '@/components/products/ProductGrid';
-import { products, featuredProducts } from '@/data/products';
+import TrendingSection from '@/components/home/TrendingSection';
+import { featuredProducts } from '@/data/products';
 
 const Index = () => {
   return (
@@ -22,6 +23,7 @@ const Index = () => {
             subtitle="Editor's Choice"
           />
           
+          <TrendingSection />
         </div>
       </main>
       
