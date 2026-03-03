@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Menu, X, Smartphone, Search, User, LogOut } from 'lucide-react';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from '@/components/ui/button';
@@ -63,6 +64,10 @@ const Header = () => {
             <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground">
               <Search className="w-5 h-5" />
             </Button>
+            
+            <div className="hidden md:flex">
+              <ThemeToggle />
+            </div>
             
             {/* User Menu */}
             {user ? (
