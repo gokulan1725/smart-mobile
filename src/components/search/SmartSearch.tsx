@@ -43,19 +43,15 @@ const SmartSearch = ({ open, onOpenChange }: SmartSearchProps) => {
     if (!user) return;
     setLoadingOrders(true);
     try {
-      let queryBuilder = supabase
-        .from('orders')
+      const { data, error } = await supabase
+        .from('orders' as any)
         .select('id, order_number, status, total_amount, created_at')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
         .limit(10);
 
-      if (query) {
-        queryBuilder = queryBuilder.ilike('order_number', `%${query}%`);
-      }
-
-      const { data } = await queryBuilder;
-      setPreviousOrders((data as OrderResult[]) || []);
+      if (error) throw error;
+      setPreviousOrders((data as unknown as OrderResult[]) || []);
     } catch (error) {
       console.error('Error fetching orders:', error);
     } finally {

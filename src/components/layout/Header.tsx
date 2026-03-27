@@ -21,6 +21,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', href: '/' },
