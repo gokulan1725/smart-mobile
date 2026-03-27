@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ShoppingCart, Menu, X, Smartphone, Search, User, LogOut } from 'lucide-react';
+import SmartSearch from '@/components/search/SmartSearch';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -20,6 +21,7 @@ const Header = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const navLinks = [
     { name: 'Home', href: '/' },
@@ -61,9 +63,10 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="w-5 h-5" />
             </Button>
+            <SmartSearch open={searchOpen} onOpenChange={setSearchOpen} />
             
             <div className="hidden md:flex">
               <ThemeToggle />
