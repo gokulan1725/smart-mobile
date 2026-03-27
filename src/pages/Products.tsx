@@ -52,6 +52,14 @@ const Products = () => {
       result = result.filter(p => p.brand === brandFilter);
     }
 
+    // Budget filter
+    if (minPrice) {
+      result = result.filter(p => p.price >= parseInt(minPrice));
+    }
+    if (maxPrice) {
+      result = result.filter(p => p.price <= parseInt(maxPrice));
+    }
+
     // Sorting
     switch (sortBy) {
       case 'price-low':
