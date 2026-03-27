@@ -63,9 +63,10 @@ const Header = () => {
 
           {/* Actions */}
           <div className="flex items-center gap-2">
-            <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground">
+            <Button variant="ghost" size="icon" className="hidden md:flex text-muted-foreground hover:text-foreground" onClick={() => setSearchOpen(true)}>
               <Search className="w-5 h-5" />
             </Button>
+            <SmartSearch open={searchOpen} onOpenChange={setSearchOpen} />
             
             <div className="hidden md:flex">
               <ThemeToggle />

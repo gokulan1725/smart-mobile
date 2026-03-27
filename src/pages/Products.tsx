@@ -13,13 +13,19 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [brandFilter, setBrandFilter] = useState('all');
   const [sortBy, setSortBy] = useState('featured');
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
 
-  // Handle brand filter from URL query param
+  // Handle filters from URL query params
   useEffect(() => {
     const brandFromUrl = searchParams.get('brand');
-    if (brandFromUrl) {
-      setBrandFilter(brandFromUrl);
-    }
+    const searchFromUrl = searchParams.get('search');
+    const minFromUrl = searchParams.get('minPrice');
+    const maxFromUrl = searchParams.get('maxPrice');
+    if (brandFromUrl) setBrandFilter(brandFromUrl);
+    if (searchFromUrl) setSearchQuery(searchFromUrl);
+    if (minFromUrl) setMinPrice(minFromUrl);
+    if (maxFromUrl) setMaxPrice(maxFromUrl);
   }, [searchParams]);
 
   const brands = useMemo(() => {
