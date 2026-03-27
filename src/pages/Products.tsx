@@ -170,6 +170,8 @@ const Products = () => {
                 onClick={() => {
                   setSearchQuery('');
                   setBrandFilter('all');
+                  setMinPrice('');
+                  setMaxPrice('');
                 }}
                 className="mt-4 text-primary hover:underline"
               >
