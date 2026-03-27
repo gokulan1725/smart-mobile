@@ -79,7 +79,7 @@ const Products = () => {
     }
 
     return result;
-  }, [searchQuery, brandFilter, sortBy]);
+  }, [searchQuery, brandFilter, sortBy, minPrice, maxPrice]);
 
   return (
     <div className="min-h-screen flex flex-col">
