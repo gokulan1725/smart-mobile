@@ -23,7 +23,11 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, subject, message }: ContactFormRequest = await req.json();
+    const body: ContactFormRequest = await req.json();
+    const { name, email, subject, message } = body;
+
+    // Sanitize inputs to prevent HTML injection in emails
+    const sanitize = (s: string) => s.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
@@ -76,24 +80,24 @@ const handler = async (req: Request): Promise<Response> => {
             <div class="content">
               <div class="field">
                 <div class="label">👤 Name:</div>
-                <div class="value">${name}</div>
+                <div class="value">${sanitize(name)}</div>
               </div>
               <div class="field">
                 <div class="label">📧 Email:</div>
-                <div class="value"><a href="mailto:${email}">${email}</a></div>
+                <div class="value"><a href="mailto:${sanitize(email)}">${sanitize(email)}</a></div>
               </div>
               <div class="field">
                 <div class="label">📋 Subject:</div>
-                <div class="value">${subject}</div>
+                <div class="value">${sanitize(subject)}</div>
               </div>
               <div class="field">
                 <div class="label">💬 Message:</div>
-                <div class="message-box">${message.replace(/\n/g, '<br>')}</div>
+                <div class="message-box">${sanitize(message).replace(/\n/g, '<br>')}</div>
               </div>
             </div>
             <div class="footer">
               <p>This message was sent from the MobileHub contact form.</p>
-              <p>You can reply directly to this email to respond to ${name}.</p>
+              <p>You can reply directly to this email to respond to ${sanitize(name)}.</p>
             </div>
           </div>
         </body>
