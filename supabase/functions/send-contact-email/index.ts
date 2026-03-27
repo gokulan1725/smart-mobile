@@ -23,7 +23,11 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { name, email, subject, message }: ContactFormRequest = await req.json();
+    const body: ContactFormRequest = await req.json();
+    const { name, email, subject, message } = body;
+
+    // Sanitize inputs to prevent HTML injection in emails
+    const sanitize = (s: string) => s.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
     // Validate required fields
     if (!name || !email || !subject || !message) {

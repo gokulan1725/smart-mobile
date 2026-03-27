@@ -118,12 +118,16 @@ const SmartChatbot = () => {
   ];
 
   const renderMarkdown = (text: string) => {
-    return text
+    const html = text
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
       .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
       .replace(/`(.*?)`/g, '<code class="bg-muted px-1 rounded text-xs">$1</code>')
       .replace(/\n- /g, '\n• ')
       .replace(/\n/g, '<br/>');
+    return DOMPurify.sanitize(html);
   };
 
   return (
