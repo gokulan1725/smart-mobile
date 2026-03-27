@@ -97,7 +97,7 @@ const handler = async (req: Request): Promise<Response> => {
             </div>
             <div class="footer">
               <p>This message was sent from the MobileHub contact form.</p>
-              <p>You can reply directly to this email to respond to ${name}.</p>
+              <p>You can reply directly to this email to respond to ${sanitize(name)}.</p>
             </div>
           </div>
         </body>
