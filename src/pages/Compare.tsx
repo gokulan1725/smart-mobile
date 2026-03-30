@@ -181,7 +181,9 @@ const Compare = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     layout
-                    className="bg-card border border-border rounded-2xl overflow-hidden"
+                    className={`bg-card border-2 rounded-2xl overflow-hidden ${
+                      bestPick?.phone.id === phone.id ? 'border-primary ring-2 ring-primary/20' : 'border-border'
+                    }`}
                   >
                     {/* Phone Header */}
                     <div className="relative p-4 bg-muted/30">
