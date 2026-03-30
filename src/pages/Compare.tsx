@@ -108,6 +108,56 @@ const Compare = () => {
             </motion.div>
           )}
 
+          {/* Best Pick Recommendation */}
+          {bestPick && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 p-6 rounded-2xl border-2 border-primary bg-primary/5 relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <div className="relative flex flex-col md:flex-row items-center gap-6">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                    <Trophy className="w-8 h-8 text-primary" />
+                  </div>
+                </div>
+                <div className="flex-shrink-0">
+                  <img
+                    src={bestPick.phone.images[0]}
+                    alt={bestPick.phone.name}
+                    className="w-24 h-24 object-contain"
+                  />
+                </div>
+                <div className="flex-1 text-center md:text-left">
+                  <div className="flex items-center gap-2 justify-center md:justify-start mb-1">
+                    <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                      Best Pick
+                    </span>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium">
+                      Score: {bestPick.score}/100
+                    </span>
+                  </div>
+                  <h3 className="font-display text-xl font-bold">
+                    {bestPick.phone.brand} {bestPick.phone.name}
+                  </h3>
+                  <p className="text-lg font-bold text-primary">
+                    ₹{bestPick.phone.price.toLocaleString('en-IN')}
+                  </p>
+                  <div className="flex items-center gap-4 mt-2 justify-center md:justify-start text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <Star className="w-3.5 h-3.5 text-primary" /> {bestPick.phone.rating} rating
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Zap className="w-3.5 h-3.5 text-primary" /> {bestPick.phone.specs.battery}
+                    </span>
+                    <span>{bestPick.phone.specs.camera}</span>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           {/* Comparison Cards */}
           {selectedPhones.length === 0 ? (
             <motion.div
