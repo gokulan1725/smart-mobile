@@ -21,6 +21,31 @@ const Compare = () => {
     return products.filter(p => !selectedPhones.find(s => s.id === p.id));
   }, [selectedPhones]);
 
+  const bestPick = useMemo(() => {
+    if (selectedPhones.length < 2) return null;
+
+    const scored = selectedPhones.map(phone => {
+      const ratingScore = (phone.rating / 5) * 30;
+      const reviewScore = Math.min(phone.reviewCount / 5000, 1) * 15;
+      const batteryNum = parseInt(phone.specs.battery) || 0;
+      const batteryScore = Math.min(batteryNum / 6500, 1) * 15;
+      const ramNum = parseInt(phone.specs.ram) || 0;
+      const ramScore = Math.min(ramNum / 24, 1) * 10;
+      const cameraNum = parseInt(phone.specs.camera) || 0;
+      const cameraScore = Math.min(cameraNum / 200, 1) * 10;
+      const stockScore = phone.inStock ? 10 : 0;
+      const valueScore = phone.originalPrice
+        ? ((phone.originalPrice - phone.price) / phone.originalPrice) * 10
+        : 0;
+
+      const total = ratingScore + reviewScore + batteryScore + ramScore + cameraScore + stockScore + valueScore;
+      return { phone, score: Math.round(total) };
+    });
+
+    scored.sort((a, b) => b.score - a.score);
+    return scored[0];
+  }, [selectedPhones]);
+
   const addPhone = (phoneId: string) => {
     const phone = products.find(p => p.id === phoneId);
     if (phone && selectedPhones.length < 4) {
