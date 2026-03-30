@@ -5,7 +5,7 @@ import Footer from '@/components/layout/Footer';
 import { products } from '@/data/products';
 import { Product } from '@/types/product';
 import { Button } from '@/components/ui/button';
-import { X, Plus, ArrowRight, Check, Minus, Smartphone } from 'lucide-react';
+import { X, Plus, ArrowRight, Check, Minus, Smartphone, Trophy, Star, Zap } from 'lucide-react';
 import {
   Select,
   SelectContent,
