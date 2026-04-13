@@ -41,17 +41,24 @@ serve(async (req) => {
     }
 
     // Build line items from cart
-    const lineItems = items.map((item: any) => ({
-      price_data: {
-        currency: "inr",
-        product_data: {
-          name: item.product_name,
-          ...(item.product_image ? { images: [item.product_image] } : {}),
+    const isValidUrl = (str: string) => {
+      try { const u = new URL(str); return u.protocol === 'http:' || u.protocol === 'https:'; } catch { return false; }
+    };
+
+    const lineItems = items.map((item: any) => {
+      const images = item.product_image && isValidUrl(item.product_image) ? [item.product_image] : [];
+      return {
+        price_data: {
+          currency: "inr",
+          product_data: {
+            name: item.product_name,
+            ...(images.length > 0 ? { images } : {}),
+          },
+          unit_amount: Math.round(item.product_price * 100),
         },
-        unit_amount: Math.round(item.product_price * 100), // Convert to paise
-      },
-      quantity: item.quantity,
-    }));
+        quantity: item.quantity,
+      };
+    });
 
     const origin = req.headers.get("origin") || "https://smart-mobile.lovable.app";
 
