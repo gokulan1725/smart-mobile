@@ -52,6 +52,16 @@ const Checkout = () => {
     return true;
   };
 
+  const isValidImageUrl = (url: unknown): url is string => {
+    if (typeof url !== 'string' || url.trim() === '') return false;
+    try {
+      const u = new URL(url.trim());
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
   const handleOnlinePayment = async () => {
     if (!validateAddress()) return;
     setProcessing(true);
@@ -61,12 +71,13 @@ const Checkout = () => {
           items: items.map(item => ({
             product_name: item.product_name,
             product_price: item.product_price,
-            product_image: item.product_image,
+            product_image: isValidImageUrl(item.product_image) ? item.product_image.trim() : null,
             quantity: item.quantity,
           })),
           address,
         },
       });
+
 
       if (error) throw error;
       if (data?.url) {
