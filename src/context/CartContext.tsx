@@ -59,10 +59,23 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     fetchCart();
   }, [user]);
 
+  const isValidImageUrl = (url: unknown): url is string => {
+    if (typeof url !== 'string' || url.trim() === '') return false;
+    try {
+      const u = new URL(url.trim());
+      return u.protocol === 'http:' || u.protocol === 'https:';
+    } catch {
+      return false;
+    }
+  };
+
   const addToCart = async (product: Product, color?: string) => {
     if (!user) return;
 
     const selectedColor = color || product.colors[0];
+    const rawImage = product.images?.[0];
+    const safeImage = isValidImageUrl(rawImage) ? rawImage.trim() : null;
+
     
     // Check if item already exists
     const existingItem = items.find(
@@ -95,7 +108,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
             product_id: product.id,
             product_name: product.name,
             product_price: product.price,
-            product_image: product.images[0],
+            product_image: safeImage,
             product_brand: product.brand,
             selected_color: selectedColor,
             quantity: 1
